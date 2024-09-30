@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormFieldset from "../FormFieldset/FormFieldset";
+import userSignup from "../../services/userSignUp";
 
 function SignUpForm({ onError }) {
   const [{ username, email, password }, setForm] = useState({
@@ -14,11 +15,11 @@ function SignUpForm({ onError }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(
-      `Username: ${username}, Email: ${email}, Password: ${password}`
-    );
-
-    navigate("/");
+    userSignup({ username, email, password })
+      .then(() => {
+        navigate("/");
+      })
+      .catch(onError);
   };
 
   const inputHandler = (e) => {

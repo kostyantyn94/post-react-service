@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormFieldset from "../FormFieldset/FormFieldset";
+import userLogin from "../../services/userLogin";
 
 function LoginForm({ onError }) {
   const [{ email, password }, setForm] = useState({ email: "", password: "" });
@@ -9,9 +10,11 @@ function LoginForm({ onError }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(`Email: ${email}, Password: ${password}`);
-
-    navigate("/");
+    userLogin({ email, password })
+      .then(() => {
+        navigate("/");
+      })
+      .catch(onError);
   };
 
   const inputHandler = (e) => {
