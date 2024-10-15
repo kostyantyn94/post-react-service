@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import NavItem from "../NavItem";
 import SourceCodeLink from "../SourceCodeLink";
+import DropdownMenu from "./DropdownMenu";
 
 function NavBar() {
-  const isAuth = false;
+  const { isAuth } = useAuth();
 
   return (
     <nav className="navbar navbar-light">
@@ -20,6 +22,7 @@ function NavBar() {
           {isAuth && (
             <>
               <NavItem text="New Article" icon="ion-compose" url="/editor" />
+              <DropdownMenu />
             </>
           )}
 

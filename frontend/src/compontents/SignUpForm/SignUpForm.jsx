@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import FormFieldset from "../FormFieldset/FormFieldset";
 import userSignup from "../../services/userSignUp";
 
@@ -9,6 +10,7 @@ function SignUpForm({ onError }) {
     email: "",
     password: "",
   });
+  const { setAuthState } = useAuth();
 
   const navigate = useNavigate();
 
@@ -16,6 +18,7 @@ function SignUpForm({ onError }) {
     e.preventDefault();
 
     userSignup({ username, email, password })
+      .then(setAuthState)
       .then(() => {
         navigate("/");
       })

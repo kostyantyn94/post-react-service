@@ -1,9 +1,13 @@
 const User = require("../models/User");
+const { bcryptHash, bcyptCompare } = require("../helper/bcrypt");
 const {
   FieldRequiredError,
   AlreadyTakenError,
   NotFoundError,
-} = require("../helper/customError");
+  ValidationError,
+} = require("../helper/customErrors");
+const { jwtSign } = require("../helper/jwt");
+
 // Register
 
 const signUp = async (req, res, next) => {
@@ -17,15 +21,21 @@ const signUp = async (req, res, next) => {
       where: { email: req.body.user.email },
     });
 
+    if (userExists) throw new AlreadyTakenError("Email", "try loggin in");
+
     const newUser = await User.create({
       email,
       username,
       bio,
       image,
-      password,
+      password: await bcryptHash(password),
     });
 
-    res.status(201).json({ user: newUser });
+    newUser.dataValues.token = await jwtSign(newUser);
+
+    const { password: passwd, ...userWithoutPassword } = newUser.toJSON();
+
+    res.status(201).json({ user: userWithoutPassword });
 
     if (userExists) throw new AlreadyTakenError("Email", "try loggin in");
   } catch (err) {
@@ -38,9 +48,18 @@ const signIn = async (req, res, next) => {
     const { user } = req.body;
 
     const existentUser = await User.findOne({ where: { email: user.email } });
+
     if (!existentUser) throw new NotFoundError("Email", "sign in first");
 
-    res.json({ user: existentUser });
+    const pwd = await bcyptCompare(user.password, existentUser.password);
+
+    if (!pwd) throw new ValidationError("Wrong email/password combination");
+
+    existentUser.dataValues.token = await jwtSign(user);
+
+    const { password, ...existentUserWithoutPassword } = existentUser.toJSON();
+
+    res.json({ user: existentUserWithoutPassword });
   } catch (err) {
     console.log(err);
   }

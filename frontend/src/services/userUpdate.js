@@ -1,17 +1,16 @@
 import axios from "axios";
 import errorHandler from "../helpers/errorHandler";
 
-async function userSignUp({ username, email, password }) {
+async function userUpdate({ headers, bio, email, image, password, username }) {
   try {
     const { data } = await axios({
-      data: { user: { username, email, password } },
-      method: "POST",
-      url: "api/users",
+      data: { user: { bio, email, image, password, username } },
+      headers,
+      method: "PUT",
+      url: "api/user",
     });
 
     const { user } = data;
-
-    const headers = { Authorization: `Token ${user.token}` };
 
     const loggedIn = { headers, isAuth: true, loggedUser: user };
 
@@ -23,4 +22,4 @@ async function userSignUp({ username, email, password }) {
   }
 }
 
-export default userSignUp;
+export default userUpdate;

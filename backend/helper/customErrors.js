@@ -25,8 +25,16 @@ class NotFoundError extends MyError {
   }
 }
 
+class UnauthorizedError extends MyError {
+  constructor() {
+    super("You need to login first!");
+  }
+}
+
 module.exports = {
   FieldRequiredError,
   AlreadyTakenError,
   NotFoundError,
+  ValidationError,
+  UnauthorizedError,
 };

@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 
 const usersRoutes = require("./routes/users");
+const userRoute = require("./routes/user");
+const profileRoute = require("./routes/profiles");
 
 const app = express();
 
@@ -15,6 +17,8 @@ app.get("/", (req, res, next) => {
   res.json({ status: "Api is running on /api" });
 });
 app.use("/api/users", usersRoutes);
+app.use("/api/user", userRoute);
+app.use("/api/profiles", profileRoute);
 
 app.get("*", (req, res) => {
   res.status(404).json({ errors: { body: ["Nof found"] } });

@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import FormFieldset from "../FormFieldset/FormFieldset";
 import userLogin from "../../services/userLogin";
 
 function LoginForm({ onError }) {
   const [{ email, password }, setForm] = useState({ email: "", password: "" });
+  const { setAuthState } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     userLogin({ email, password })
+      .then(setAuthState)
       .then(() => {
         navigate("/");
       })

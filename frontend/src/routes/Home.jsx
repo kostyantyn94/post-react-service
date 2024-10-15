@@ -1,10 +1,13 @@
 import { Outlet } from "react-router-dom";
 import BannerContainer from "../compontents/BannerContainer";
 import ContainerRow from "../compontents/ContainerRow/ContainerRow";
+import FeedToggler from "../compontents/FeedToggler";
 import PopularTags from "../compontents/PopularTags";
+import { useAuth } from "../context/AuthContext";
+import FeedProvider from "../context/FeedContext";
 
 function Home() {
-  const isAuth = false;
+  const { isAuth } = useAuth();
 
   return (
     <div className="home-page">
@@ -14,11 +17,15 @@ function Home() {
           <p>A place to share your knowledge.</p>
         </BannerContainer>
       )}
+
       <ContainerRow type="page">
-        <div className="col-md-9">
-          <Outlet />
-        </div>
-        <PopularTags />
+        <FeedProvider>
+          <div className="col-md-9">
+            <FeedToggler />
+            <Outlet />
+          </div>
+          <PopularTags />
+        </FeedProvider>
       </ContainerRow>
     </div>
   );
